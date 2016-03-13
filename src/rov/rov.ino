@@ -1,4 +1,7 @@
 #include "communication.h"
+#include "received.h"
+#include "robot.h"
+#include "state.h"
 
 int command_state = 0;
 int command = -1;
@@ -26,18 +29,15 @@ void check_for_commands() /// State machine!
 		bytes_left = 0;
 		buffer_pos = 0;
 	}
-	if(command_state==1) // Read command byte
-	{
+	if(command_state==1) { // Read command byte
 		if (Serial.available() > 0)
 		{
 			command = Serial.read();
-			CommunicationCommand communication_command = static_cast<CommunicationCommand>(command);
-			bytes_left = communication_command_get_command_length(communication_command);
+			bytes_left = Communication::getCommandLength(command);
 			command_state = 2;
 		}
 	}
-	if(command_state==2) // Read bytes into the buffer
-	{
+	if(command_state==2) {// Read bytes into the buffer
 		while (Serial.available() > 0 && bytes_left>0)
 		{
 			buffer[buffer_pos] = Serial.read();
@@ -49,23 +49,20 @@ void check_for_commands() /// State machine!
 			command_state = 3;
 		}
 	}
-	if(command_state==3) // Parse the command
-	{
-		CommunicationCommand communication_command = static_cast<CommunicationCommand>(command);
-		recieved_command(communication_command, buffer);
+	if(command_state==3) { // Parse the command
+		recieved_command(command, buffer);
 		command_state=0;
 	}
 }
 
-void update()
-{
-	update_motors();
-	update_sensors();
+void update() {
+	robot->update();
 }
 
 
-void change_pwm_frequency()
-{
+// Increases the frequency of the arduino mega.
+// This is needed to prevent the motor drivers from blowing up.
+void change_pwm_frequency() {
 	int my_eraser = 7;
 	TCCR0B &= ~my_eraser;
 	TCCR1B &= ~my_eraser;
