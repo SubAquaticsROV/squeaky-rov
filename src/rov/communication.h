@@ -8,13 +8,15 @@
 #define CMD_SET_PWM_BOUNDS 0x12
 #define CMD_SET_SAFETY_TIMEOUT 0x13
 
-//Gripper
-#define CMD_SET_GRIPPER_PIN 0x20
-#define CMD_CONTROL_GRIPPER 0x21
+//Gripper/Steppers
+#define CMD_SET_STEPPER_PINS 0x20
+#define CMD_CONTROL_STEPPER 0x21
+#define CMD_SET_STEPPER_STATE 0x22
 
 //Sensors
-#define CMD_SET_SENSOR_PIN 0x30
-#define CMD_SENSOR_STATE 0x31
+#define CMD_SENSOR_STATE 0x30
+#define CMD_SET_VOLTAGE_SENSOR_PIN 0x31
+#define CMD_SET_TEMPERATURE_SENSOR_PIN 0x32
 
 //Cameras
 #define CMD_SET_CAMERA_PINS 0x40
@@ -22,6 +24,7 @@
 
 //Misc
 #define CMD_ECHO 0xF0
+#define CMD_VERSION 0xF1
 
 namespace Communication {
 	int getCommandLength(int);
